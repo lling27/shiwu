@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>拾悟 · 道次第修学日记</title>
+<style>
+  :root {
+    --paper: #faf6ef;
+    --card: #ffffff;
+    --ink: #3b3229;
+    --ink-soft: #7a6f61;
+    --ink-faint: #b3a894;
+    --accent: #b5623c;
+    --accent-soft: #f3e3d9;
+    --line: #e8e0d2;
+    --quote: #8a7357;
+    --wen-bg: #e6edf3; --wen-fg: #4a6f96;
+    --si-bg: #f6ead8;  --si-fg: #a3702c;
+    --xiu-bg: #e7efe2; --xiu-fg: #5f7d4d;
+    --shadow: 0 1px 3px rgba(80, 60, 30, 0.07), 0 6px 20px rgba(80, 60, 30, 0.05);
+    --radius: 14px;
+  }
+  [data-theme="dark"] {
+    --paper: #201c17;
+    --card: #2a251f;
+    --ink: #e8e0d2;
+    --ink-soft: #a89b87;
+    --ink-faint: #6b6253;
+    --accent: #d98a5f;
+    --accent-soft: #3d2f26;
+    --line: #3a332a;
+    --quote: #c0a982;
+    --wen-bg: #2c3540; --wen-fg: #8fb0d1;
+    --si-bg: #3d3222;  --si-fg: #d1a75f;
+    --xiu-bg: #2d3627; --xiu-fg: #96b57e;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+    line-height: 1.75;
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 18px 80px; position: relative; }
+
+  /* ---------- header ---------- */
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+  h1 { font-size: 24px; font-weight: 700; letter-spacing: 2px; }
+  h1 .dot { color: var(--accent); }
+  h1 .sub { font-size: 13px; color: var(--ink-faint); font-weight: 400; letter-spacing: 1px; margin-left: 6px; }
+  .header-btns { display: flex; gap: 8px; }
+  .icon-btn {
+    background: none; border: 1px solid var(--line); color: var(--ink-soft);
+    border-radius: 10px; padding: 5px 10px; font-size: 14px; cursor: pointer;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .stats { font-size: 13px; color: var(--ink-faint); margin-bottom: 16px; letter-spacing: 0.5px; }
+  .stats b { color: var(--accent); font-weight: 700; }
+
+  /* ---------- view tabs ---------- */
+  .tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+  .tab {
+    flex: 1; background: none; border: none; font-family: inherit; font-size: 14.5px;
+    color: var(--ink-soft); padding: 7px 0; border-radius: 9px; cursor: pointer;
+    letter-spacing: 2px; transition: all 0.15s;
+  }
+  .tab.on { background: var(--accent); color: #fff; }
+
+  /* ---------- composer ---------- */
+  .composer {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px; margin-bottom: 24px; border: 1px solid var(--line);
+  }
+  .prompt-bar {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: var(--quote); margin-bottom: 12px;
+    padding-bottom: 12px; border-bottom: 1px dashed var(--line);
+  }
+  .prompt-bar .q { flex: 1; font-style: italic; }
+  .prompt-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .mini-btn {
+    background: none; border: none; color: var(--ink-faint); font-size: 12px;
+    cursor: pointer; font-family: inherit; padding: 2px 6px; border-radius: 6px; white-space: nowrap;
+  }
+  .mini-btn:hover { color: var(--accent); background: var(--accent-soft); }
+  textarea#draft {
+    width: 100%; border: none; background: none; resize: none; outline: none;
+    font-family: inherit; font-size: 16px; color: var(--ink); line-height: 1.8;
+    min-height: 80px;
+  }
+  textarea#draft::placeholder { color: var(--ink-faint); }
+  .composer-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .type-seg { display: flex; gap: 4px; }
+  .type-btn {
+    border: 1px solid var(--line); background: none; font-family: inherit; font-size: 13px;
+    padding: 4px 13px; border-radius: 999px; cursor: pointer; color: var(--ink-soft);
+    transition: all 0.15s;
+  }
+  .type-btn[data-t="闻"].on { background: var(--wen-bg); color: var(--wen-fg); border-color: var(--wen-fg); }
+  .type-btn[data-t="思"].on { background: var(--si-bg); color: var(--si-fg); border-color: var(--si-fg); }
+  .type-btn[data-t="修"].on { background: var(--xiu-bg); color: var(--xiu-fg); border-color: var(--xiu-fg); }
+  select#nodeSelect {
+    flex: 1; min-width: 150px; background: var(--paper); border: 1px solid var(--line);
+    border-radius: 10px; padding: 5px 8px; font-family: inherit; font-size: 13px;
+    color: var(--ink-soft); outline: none; max-width: 100%;
+  }
+  .composer-foot { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  input#tagInput {
+    flex: 1; min-width: 120px; border: none; background: none; outline: none;
+    font-family: inherit; font-size: 13px; color: var(--ink-soft);
+  }
+  input#tagInput::placeholder { color: var(--ink-faint); }
+  .save-btn {
+    background: var(--accent); color: #fff; border: none; border-radius: 10px;
+    padding: 8px 22px; font-size: 15px; font-family: inherit; cursor: pointer;
+    letter-spacing: 3px; transition: opacity 0.15s;
+  }
+  .save-btn:hover { opacity: 0.88; }
+  .save-hint { font-size: 11px; color: var(--ink-faint); width: 100%; text-align: right; margin-top: 6px; }
+
+  /* ---------- type badge & node chip ---------- */
+  .type-b {
+    font-size: 11px; border-radius: 5px; padding: 1px 6px; letter-spacing: 1px;
+  }
+  .type-b.t-闻 { background: var(--wen-bg); color: var(--wen-fg); }
+  .type-b.t-思 { background: var(--si-bg); color: var(--si-fg); }
+  .type-b.t-修 { background: var(--xiu-bg); color: var(--xiu-fg); }
+  .entry-node {
+    font-size: 11.5px; color: var(--quote); cursor: pointer; border-bottom: 1px dotted var(--quote);
+  }
+  .entry-node:hover { color: var(--accent); }
+
+  /* ---------- review cards ---------- */
+  .review-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .review-card {
+    flex: 1; min-width: 220px; background: var(--accent-soft);
+    border-radius: var(--radius); padding: 14px 16px; font-size: 14px;
+    border: 1px solid var(--line); cursor: pointer; transition: transform 0.15s;
+  }
+  .review-card:hover { transform: translateY(-1px); }
+  .review-card .rc-title { font-size: 12px; color: var(--accent); letter-spacing: 2px; margin-bottom: 6px; font-weight: 700; }
+  .review-card .rc-body { color: var(--ink-soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .review-card .rc-date { font-size: 11px; color: var(--ink-faint); margin-top: 6px; }
+
+  /* ---------- filter bar ---------- */
+  .filter-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+  input#search {
+    flex: 1; min-width: 140px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 10px; padding: 7px 12px; font-family: inherit; font-size: 14px;
+    color: var(--ink); outline: none;
+  }
+  input#search:focus { border-color: var(--accent); }
+  .tag-chip, .type-chip, .node-filter-chip {
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 3px 12px; font-size: 12px; color: var(--ink-soft); cursor: pointer;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .tag-chip:hover, .type-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .tag-chip.on, .type-chip.on, .node-filter-chip { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ---------- timeline ---------- */
+  .day-group { margin-bottom: 28px; }
+  .day-head {
+    font-size: 13px; color: var(--ink-faint); letter-spacing: 1px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+  }
+  .day-head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .entry {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 15px 17px; margin-bottom: 12px; box-shadow: var(--shadow); position: relative;
+  }
+  .entry-text { font-size: 15.5px; white-space: pre-wrap; word-break: break-word; }
+  .entry-text .qline { color: var(--quote); font-style: italic; font-size: 14px; display: block; padding-left: 10px; border-left: 2px solid var(--quote); margin: 2px 0; }
+  .entry-meta { display: flex; align-items: center; gap: 8px; margin-top: 9px; flex-wrap: wrap; }
+  .entry-time { font-size: 11.5px; color: var(--ink-faint); }
+  .entry-mood { font-size: 14px; }
+  .entry-tag {
+    font-size: 11.5px; color: var(--accent); background: var(--accent-soft);
+    border-radius: 999px; padding: 1px 9px; cursor: pointer;
+  }
+  .entry-ops { margin-left: auto; display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+  .entry:hover .entry-ops, .entry:focus-within .entry-ops { opacity: 1; }
+  @media (hover: none) { .entry-ops { opacity: 0.6; } }
+  .op-btn {
+    background: none; border: none; color: var(--ink-faint); cursor: pointer;
+    font-size: 13px; padding: 2px 5px; border-radius: 6px; font-family: inherit;
+  }
+  .op-btn:hover { color: var(--accent); background: var(--accent-soft); }
+  .entry textarea.edit-area {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; background: var(--paper);
+    font-family: inherit; font-size: 15px; color: var(--ink); padding: 8px 10px;
+    resize: vertical; min-height: 70px; outline: none; line-height: 1.7;
+  }
+  .empty { text-align: center; color: var(--ink-faint); padding: 50px 20px; font-size: 14px; letter-spacing: 1px; }
+  .empty .big { font-size: 34px; margin-bottom: 12px; }
+
+  /* ---------- path view ---------- */
+  .progress-line {
+    font-size: 13.5px; color: var(--ink-soft); background: var(--accent-soft);
+    border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 10px 16px; margin-bottom: 18px;
+  }
+  .progress-line b { color: var(--accent); }
+  .sect { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+  .sect-head {
+    display: flex; align-items: center; gap: 10px; padding: 13px 17px;
+    font-size: 16px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
+  }
+  .sect-head .cnt { font-size: 12px; font-weight: 400; color: var(--ink-faint); letter-spacing: 0; }
+  .node-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 17px 10px 30px;
+    border-top: 1px solid var(--line); cursor: pointer; font-size: 14.5px; transition: background 0.15s;
+  }
+  .node-row:hover { background: var(--accent-soft); }
+  .node-row .nr-title { flex: 1; }
+  .node-row .nr-cnt { font-size: 12px; color: var(--ink-faint); }
+  .node-row .nr-pin { font-size: 12px; }
+  .node-row.is-progress .nr-title { color: var(--accent); font-weight: 700; }
+  .node-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
+  .node-dot.has { background: var(--accent); }
+  .node-panel { border-top: 1px dashed var(--line); background: var(--paper); padding: 12px 17px; }
+  .node-panel .entry { box-shadow: none; }
+  .node-panel-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+  .ob-btn {
+    background: none; border: none; color: var(--ink-faint); cursor: pointer;
+    font-size: 12.5px; padding: 2px 6px; border-radius: 6px; font-family: inherit; flex-shrink: 0;
+  }
+  .ob-btn:hover { color: var(--accent); background: var(--accent-soft); }
+  .outline-foot { display: flex; gap: 10px; justify-content: center; margin-top: 4px; }
+
+  /* ---------- modal / toast / menu ---------- */
+  .modal-mask {
+    position: fixed; inset: 0; background: rgba(30, 22, 12, 0.45);
+    display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px;
+  }
+  .modal-mask.show { display: flex; }
+  .modal {
+    background: var(--card); border-radius: var(--radius); max-width: 480px; width: 100%;
+    padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); max-height: 80vh; overflow-y: auto;
+  }
+  .modal h3 { font-size: 15px; color: var(--accent); letter-spacing: 2px; margin-bottom: 14px; }
+  .modal .m-text { font-size: 16px; white-space: pre-wrap; word-break: break-word; }
+  .modal .m-date { font-size: 12px; color: var(--ink-faint); margin-top: 14px; }
+  .modal .m-close { margin-top: 18px; text-align: right; }
+  #toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--paper); border-radius: 999px;
+    padding: 8px 22px; font-size: 13px; opacity: 0; pointer-events: none;
+    transition: all 0.3s; z-index: 99; letter-spacing: 1px;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .data-menu {
+    position: absolute; right: 18px; top: 58px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow);
+    display: none; flex-direction: column; z-index: 40; overflow: hidden;
+  }
+  .data-menu.show { display: flex; }
+  .data-menu button {
+    background: none; border: none; padding: 10px 20px; font-family: inherit;
+    font-size: 13.5px; color: var(--ink); cursor: pointer; text-align: left;
+  }
+  .data-menu button:hover { background: var(--accent-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>拾悟<span class="dot">。</span><span class="sub">道次第修学日记</span></h1>
+    <div class="header-btns">
+      <button class="icon-btn" id="themeBtn" title="切换深浅色">◑</button>
+      <button class="icon-btn" id="dataBtn" title="数据备份">备份</button>
+    </div>
+  </header>
+  <div class="data-menu" id="dataMenu">
+    <button id="exportMd">导出 Markdown</button>
+    <button id="exportJson">导出 JSON 备份</button>
+    <button id="importJson">导入 JSON 备份</button>
+  </div>
+  <div class="stats" id="stats"></div>
+
+  <div class="composer">
+    <div class="prompt-bar">
+      <span class="q" id="promptText"></span>
+      <span class="prompt-actions">
+        <button class="mini-btn" id="promptUse">就写这个</button>
+        <button class="mini-btn" id="promptNext">换一个</button>
+      </span>
+    </div>
+    <textarea id="draft" placeholder="今天的闻思,有什么在心里留下了痕迹?" rows="3"></textarea>
+    <div class="composer-row">
+      <div class="type-seg" id="typeSeg">
+        <button class="type-btn" data-t="闻" type="button" title="听闻理解">闻</button>
+        <button class="type-btn" data-t="思" type="button" title="思维法义">思</button>
+        <button class="type-btn" data-t="修" type="button" title="座上观修">修</button>
+      </div>
+      <select id="nodeSelect"></select>
+    </div>
+    <div class="composer-foot">
+      <input id="tagInput" placeholder="标签,用空格分隔(可不填)">
+      <button class="save-btn" id="saveBtn">记下</button>
+    </div>
+    <div class="save-hint">Ctrl / ⌘ + Enter 快速保存 · 数据只存在这台设备的浏览器里</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab" data-view="timeline" type="button">时间线</button>
+    <button class="tab" data-view="path" type="button">道次第</button>
+  </div>
+
+  <div id="viewTimeline">
+    <div class="review-row" id="reviewRow"></div>
+    <div class="filter-bar" id="filterBar">
+      <input id="search" placeholder="搜索感悟…">
+    </div>
+    <div id="timeline"></div>
+  </div>
+
+  <div id="viewPath" style="display:none">
+    <div class="progress-line" id="progressLine" style="display:none"></div>
+    <div id="tree"></div>
+    <div class="outline-foot">
+      <button class="icon-btn" id="editOutlineBtn">编辑科判</button>
+      <button class="icon-btn" id="addSectionBtn" style="display:none">＋ 添加大科</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <h3 id="modalTitle"></h3>
+    <div class="m-text" id="modalText"></div>
+    <div class="m-date" id="modalDate"></div>
+    <div class="m-close"><button class="icon-btn" id="modalClose">合上</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<input type="file" id="fileInput" accept=".json" style="display:none">
+
+<script>
+"use strict";
+/* ============ 常量与数据 ============ */
+const LS_ENTRIES = "shiwu.entries.v1";
+const LS_OUTLINE = "shiwu.outline.v1";
+const LS_PROGRESS = "shiwu.progress.v1";
+const LS_THEME = "shiwu.theme";
+const LS_VIEW = "shiwu.view";
+const TYPES = ["闻", "思", "修"];
+
+/* 默认科判:基于《菩提道次第略论》框架(可在「道次第」视图中编辑,
+   等确定济群法师讲记的章节划分后可自行调整,已有笔记不受影响) */
+const DEFAULT_OUTLINE = [
+  { id: "s0", title: "道前基础", children: [
+    { id: "s0-1", title: "本论作者与传承殊胜" },
+    { id: "s0-2", title: "本论之殊胜" },
+    { id: "s0-3", title: "说听轨则" },
+    { id: "s0-4", title: "依止善知识" },
+    { id: "s0-5", title: "略示修法(座上与座下)" },
+    { id: "s0-6", title: "暇满人身的重大意义" },
+    { id: "s0-7", title: "三士道的建立" },
+  ]},
+  { id: "s1", title: "下士道", children: [
+    { id: "s1-1", title: "念死无常" },
+    { id: "s1-2", title: "念三恶趣苦" },
+    { id: "s1-3", title: "皈依三宝" },
+    { id: "s1-4", title: "深信业果" },
+  ]},
+  { id: "s2", title: "中士道", children: [
+    { id: "s2-1", title: "思维苦谛(轮回过患)" },
+    { id: "s2-2", title: "思维集谛(流转次第)" },
+    { id: "s2-3", title: "发出离心" },
+    { id: "s2-4", title: "解脱道的安立(戒定慧)" },
+  ]},
+  { id: "s3", title: "上士道", children: [
+    { id: "s3-1", title: "菩提心的殊胜" },
+    { id: "s3-2", title: "七因果修心法" },
+    { id: "s3-3", title: "自他相换修心法" },
+    { id: "s3-4", title: "受持菩提心" },
+    { id: "s3-5", title: "菩萨行:六度四摄" },
+    { id: "s3-6", title: "止:奢摩他" },
+    { id: "s3-7", title: "观:毗钵舍那" },
+  ]},
+];
+
+const PROMPTS = [
+  "今天遇到的哪件事,可以用最近学的法义来观照?",
+  "这段法义,和你原来的观念有什么不同?",
+  "这个法类,你能用自己的话讲给别人听吗?试试看。",
+  "对这段法义,你真的相信吗?哪里还有疑问?",
+  "今天有没有一刻,想起了无常?",
+  "今天的烦恼,它的因是什么?对治它的法又是什么?",
+  "座上修时,心最容易跑去哪里?",
+  "皈依,对此刻的你意味着什么?",
+  "今天做的哪件事,是在积累资粮?",
+  "如果今天是此生最后一天,你还会为刚才的事烦恼吗?",
+  "暇满人身,今天你用它做了什么?",
+  "最近对哪位善知识、哪句开示生起了感恩?",
+  "今天有没有观察到自己的一个串习?它从哪来?",
+  "把今天的一件烦心事,放到业果的框架里看,有什么不同?",
+  "众生的哪个苦,今天真实地触动了你?",
+  "今天你为别人做了什么?当时的发心是什么?",
+  "这一周的学习,哪个概念被你『修正』了?",
+  "你现在的修学动力,更接近下士、中士还是上士的发心?诚实地看。",
+  "今天最想感恩的一个因缘是什么?",
+  "闻思到现在,哪个法类你最有感觉?哪个最『无感』?为什么?",
+];
+
+let entries = loadJSON(LS_ENTRIES, []);
+let outline = loadJSON(LS_OUTLINE, null) || JSON.parse(JSON.stringify(DEFAULT_OUTLINE));
+let progressNodeId = localStorage.getItem(LS_PROGRESS) || null;
+let view = localStorage.getItem(LS_VIEW) || "timeline";
+let filter = { tag: null, q: "", type: null, node: null };
+let selectedType = null;
+let editingId = null;
+let expandedNodeId = null;
+let outlineEditing = false;
+
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    const v = JSON.parse(raw);
+    return v == null ? fallback : v;
+  } catch (e) { return fallback; }
+}
+function persistEntries() { localStorage.setItem(LS_ENTRIES, JSON.stringify(entries)); }
+function persistOutline() { localStorage.setItem(LS_OUTLINE, JSON.stringify(outline)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+/* ============ 科判工具 ============ */
+function flatNodes() {
+  const out = [];
+  outline.forEach((s) => {
+    out.push({ id: s.id, title: s.title, section: s.title, isSection: true });
+    (s.children || []).forEach((c) => out.push({ id: c.id, title: c.title, section: s.title, isSection: false }));
+  });
+  return out;
+}
+function nodeById(id) { return flatNodes().find((n) => n.id === id) || null; }
+function nodeLabel(id) {
+  const n = nodeById(id);
+  if (!n) return "未归档";
+  return n.isSection ? n.title + " · 总" : n.title;
+}
+function nodeFullPath(id) {
+  const n = nodeById(id);
+  if (!n) return "未归档";
+  return n.isSection ? n.title : n.section + " · " + n.title;
+}
+function countFor(id, withChildren) {
+  let ids = [id];
+  if (withChildren) {
+    const s = outline.find((x) => x.id === id);
+    if (s) ids = ids.concat((s.children || []).map((c) => c.id));
+  }
+  return entries.filter((e) => ids.includes(e.nodeId)).length;
+}
+
+/* ============ 通用工具 ============ */
+const $ = (id) => document.getElementById(id);
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function fmtDateKey(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function fmtDayHead(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  const w = "日一二三四五六"[new Date(y, m - 1, d).getDay()];
+  const now = new Date();
+  const yest = new Date(now); yest.setDate(now.getDate() - 1);
+  if (key === fmtDateKey(now.getTime())) return `今天 · ${m}月${d}日 星期${w}`;
+  if (key === fmtDateKey(yest.getTime())) return `昨天 · ${m}月${d}日 星期${w}`;
+  if (y === now.getFullYear()) return `${m}月${d}日 星期${w}`;
+  return `${y}年${m}月${d}日 星期${w}`;
+}
+function fmtTime(ts) {
+  const d = new Date(ts);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+function fmtFull(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 ${fmtTime(ts)}`;
+}
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+function renderText(text) {
+  return String(text).split("\n").map((line) =>
+    line.startsWith("> ")
+      ? `<span class="qline">${esc(line.slice(2))}</span>`
+      : esc(line)
+  ).join("\n").replace(/\n(?=<span)/g, "").replace(/(<\/span>)\n/g, "$1");
+}
+
+/* ============ 引导问题 ============ */
+let promptIdx = Math.floor(Math.random() * PROMPTS.length);
+function showPrompt() { $("promptText").textContent = PROMPTS[promptIdx]; }
+$("promptNext").addEventListener("click", () => {
+  let next;
+  do { next = Math.floor(Math.random() * PROMPTS.length); } while (next === promptIdx && PROMPTS.length > 1);
+  promptIdx = next;
+  showPrompt();
+});
+$("promptUse").addEventListener("click", () => {
+  const d = $("draft");
+  const quote = "> " + PROMPTS[promptIdx] + "\n";
+  if (!d.value.startsWith(quote)) d.value = quote + d.value;
+  d.focus();
+  d.selectionStart = d.selectionEnd = d.value.length;
+});
+
+/* ============ 闻思修选择 ============ */
+$("typeSeg").addEventListener("click", (e) => {
+  const btn = e.target.closest(".type-btn");
+  if (!btn) return;
+  selectedType = selectedType === btn.dataset.t ? null : btn.dataset.t;
+  renderTypeSeg();
+});
+function renderTypeSeg() {
+  $("typeSeg").querySelectorAll(".type-btn").forEach((b) =>
+    b.classList.toggle("on", b.dataset.t === selectedType));
+}
+
+/* ============ 法类选择器 ============ */
+function renderNodeSelect(keep) {
+  const sel = $("nodeSelect");
+  const cur = keep ? sel.value : (progressNodeId || "");
+  let html = `<option value="">法类:未归档</option>`;
+  outline.forEach((s) => {
+    html += `<optgroup label="${esc(s.title)}">`;
+    html += `<option value="${esc(s.id)}">${esc(s.title)} · 总</option>`;
+    (s.children || []).forEach((c) => {
+      html += `<option value="${esc(c.id)}">${esc(c.title)}</option>`;
+    });
+    html += `</optgroup>`;
+  });
+  sel.innerHTML = html;
+  sel.value = nodeById(cur) ? cur : "";
+}
+
+/* ============ 保存 ============ */
+function parseTags(str) {
+  return [...new Set(str.split(/[\s,，#]+/).map((s) => s.trim()).filter(Boolean))].slice(0, 6);
+}
+function saveEntry() {
+  const text = $("draft").value.trim();
+  if (!text) { toast("先写点什么吧"); return; }
+  entries.unshift({
+    id: uid(),
+    text,
+    type: selectedType,
+    nodeId: $("nodeSelect").value || null,
+    tags: parseTags($("tagInput").value),
+    ts: Date.now(),
+  });
+  persistEntries();
+  $("draft").value = "";
+  $("draft").style.height = "";
+  $("tagInput").value = "";
+  renderAll();
+  toast("已拾起 ✓");
+}
+$("saveBtn").addEventListener("click", saveEntry);
+$("draft").addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "Enter") saveEntry();
+});
+$("draft").addEventListener("input", function () {
+  this.style.height = "auto";
+  this.style.height = Math.max(80, this.scrollHeight) + "px";
+});
+
+/* ============ 统计 ============ */
+function calcStreak() {
+  if (!entries.length) return 0;
+  const days = new Set(entries.map((e) => fmtDateKey(e.ts)));
+  let streak = 0;
+  const cur = new Date();
+  if (!days.has(fmtDateKey(cur.getTime()))) cur.setDate(cur.getDate() - 1);
+  while (days.has(fmtDateKey(cur.getTime()))) {
+    streak++;
+    cur.setDate(cur.getDate() - 1);
+  }
+  return streak;
+}
+function renderStats() {
+  const leafIds = outline.flatMap((s) => (s.children || []).map((c) => c.id));
+  const covered = new Set(entries.map((e) => e.nodeId).filter((id) => leafIds.includes(id))).size;
+  const streak = calcStreak();
+  $("stats").innerHTML = entries.length
+    ? `共 <b>${entries.length}</b> 条${streak > 1 ? ` · 已连续 <b>${streak}</b> 天` : ""} · 法类覆盖 <b>${covered}</b>/${leafIds.length}`
+    : "把闻思修路上的心得,轻轻拾起来。";
+}
+
+/* ============ 回顾 ============ */
+function renderReview() {
+  const row = $("reviewRow");
+  const cards = [];
+  const now = new Date();
+  const md = `${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const past = entries.filter((e) => {
+    const d = new Date(e.ts);
+    const k = `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    return k === md && d.getFullYear() < now.getFullYear();
+  });
+  if (past.length) {
+    cards.push({ title: "那年今日", entry: past[Math.floor(Math.random() * past.length)] });
+  }
+  const old = entries.filter((e) => Date.now() - e.ts > 7 * 864e5);
+  const pool = old.length ? old : entries.slice(1);
+  if (pool.length) {
+    cards.push({ title: "随机重读", entry: pool[Math.floor(Math.random() * pool.length)] });
+  }
+  row.innerHTML = cards.map((c, i) =>
+    `<div class="review-card" data-i="${i}">
+      <div class="rc-title">${c.title}</div>
+      <div class="rc-body">${renderText(c.entry.text)}</div>
+      <div class="rc-date">${fmtFull(c.entry.ts)}${c.entry.nodeId ? " · " + esc(nodeLabel(c.entry.nodeId)) : ""}</div>
+    </div>`
+  ).join("");
+  row._cards = cards;
+}
+$("reviewRow").addEventListener("click", (e) => {
+  const card = e.target.closest(".review-card");
+  if (!card) return;
+  const c = $("reviewRow")._cards[Number(card.dataset.i)];
+  $("modalTitle").textContent = c.title;
+  $("modalText").innerHTML = renderText(c.entry.text);
+  $("modalDate").textContent = fmtFull(c.entry.ts) +
+    (c.entry.type ? " · " + c.entry.type : "") +
+    (c.entry.nodeId ? " · " + nodeFullPath(c.entry.nodeId) : "");
+  $("modalMask").classList.add("show");
+});
+$("modalClose").addEventListener("click", () => $("modalMask").classList.remove("show"));
+$("modalMask").addEventListener("click", (e) => {
+  if (e.target === $("modalMask")) $("modalMask").classList.remove("show");
+});
+
+/* ============ 筛选 ============ */
+function allTags() {
+  const count = {};
+  entries.forEach((e) => (e.tags || []).forEach((t) => { count[t] = (count[t] || 0) + 1; }));
+  return Object.entries(count).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([t]) => t);
+}
+function renderFilterBar() {
+  const bar = $("filterBar");
+  bar.querySelectorAll(".tag-chip, .type-chip, .node-filter-chip").forEach((el) => el.remove());
+  if (filter.node) {
+    const b = document.createElement("button");
+    b.className = "node-filter-chip";
+    b.textContent = "法类:" + nodeLabel(filter.node) + " ✕";
+    b.addEventListener("click", () => { filter.node = null; renderFilterBar(); renderTimeline(); });
+    bar.appendChild(b);
+  }
+  TYPES.forEach((t) => {
+    const b = document.createElement("button");
+    b.className = "type-chip" + (filter.type === t ? " on" : "");
+    b.textContent = t;
+    b.addEventListener("click", () => {
+      filter.type = filter.type === t ? null : t;
+      renderFilterBar(); renderTimeline();
+    });
+    bar.appendChild(b);
+  });
+  allTags().forEach((t) => {
+    const b = document.createElement("button");
+    b.className = "tag-chip" + (filter.tag === t ? " on" : "");
+    b.textContent = "# " + t;
+    b.addEventListener("click", () => {
+      filter.tag = filter.tag === t ? null : t;
+      renderFilterBar(); renderTimeline();
+    });
+    bar.appendChild(b);
+  });
+}
+$("search").addEventListener("input", (e) => {
+  filter.q = e.target.value.trim().toLowerCase();
+  renderTimeline();
+});
+
+/* ============ 时间线 ============ */
+function visibleEntries() {
+  return entries.filter((e) => {
+    if (filter.tag && !(e.tags || []).includes(filter.tag)) return false;
+    if (filter.type && e.type !== filter.type) return false;
+    if (filter.node) {
+      const ids = [filter.node];
+      const s = outline.find((x) => x.id === filter.node);
+      if (s) ids.push(...(s.children || []).map((c) => c.id));
+      if (!ids.includes(e.nodeId)) return false;
+    }
+    if (filter.q) {
+      const hay = (e.text + " " + (e.tags || []).join(" ") + " " + (e.nodeId ? nodeFullPath(e.nodeId) : "")).toLowerCase();
+      if (!hay.includes(filter.q)) return false;
+    }
+    return true;
+  });
+}
+function entryHtml(e) {
+  if (editingId === e.id) {
+    return `<div class="entry" data-id="${e.id}">
+      <textarea class="edit-area">${esc(e.text)}</textarea>
+      <div class="entry-meta">
+        <div class="entry-ops" style="opacity:1;margin-left:auto">
+          <button class="op-btn" data-op="save-edit">保存</button>
+          <button class="op-btn" data-op="cancel-edit">取消</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  return `<div class="entry" data-id="${e.id}">
+    <div class="entry-text">${renderText(e.text)}</div>
+    <div class="entry-meta">
+      <span class="entry-time">${fmtTime(e.ts)}</span>
+      ${e.type ? `<span class="type-b t-${e.type}">${e.type}</span>` : ""}
+      ${e.mood ? `<span class="entry-mood">${e.mood}</span>` : ""}
+      ${e.nodeId ? `<span class="entry-node" data-node="${esc(e.nodeId)}">${esc(nodeLabel(e.nodeId))}</span>` : ""}
+      ${(e.tags || []).map((t) => `<span class="entry-tag" data-tag="${esc(t)}"># ${esc(t)}</span>`).join("")}
+      <div class="entry-ops">
+        <button class="op-btn" data-op="edit">改</button>
+        <button class="op-btn" data-op="del">删</button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderTimeline() {
+  const list = visibleEntries();
+  const tl = $("timeline");
+  if (!list.length) {
+    tl.innerHTML = entries.length
+      ? `<div class="empty"><div class="big">🔍</div>没有找到匹配的记录</div>`
+      : `<div class="empty"><div class="big">🍂</div>还没有记录。<br>从上面写下第一条吧,一句话也好。</div>`;
+    return;
+  }
+  const groups = new Map();
+  list.forEach((e) => {
+    const k = fmtDateKey(e.ts);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(e);
+  });
+  tl.innerHTML = [...groups.entries()].map(([key, items]) =>
+    `<div class="day-group">
+      <div class="day-head">${fmtDayHead(key)}</div>
+      ${items.map(entryHtml).join("")}
+    </div>`
+  ).join("");
+}
+
+/* ============ 道次第视图 ============ */
+function renderProgressLine() {
+  const el = $("progressLine");
+  if (progressNodeId && nodeById(progressNodeId)) {
+    el.style.display = "";
+    el.innerHTML = `📍 当前学到:<b>${esc(nodeFullPath(progressNodeId))}</b>`;
+  } else {
+    el.style.display = "none";
+  }
+}
+function nodePanelHtml(id) {
+  const list = entries.filter((e) => e.nodeId === id);
+  return `<div class="node-panel" data-panel="${esc(id)}">
+    <div class="node-panel-actions">
+      <button class="icon-btn" data-act="write-here" data-node="${esc(id)}">在此法类下记一条</button>
+      <button class="icon-btn" data-act="set-progress" data-node="${esc(id)}">${progressNodeId === id ? "取消进度标记" : "设为当前进度"}</button>
+    </div>
+    ${list.length ? list.map(entryHtml).join("") : `<div class="empty" style="padding:14px">这个法类下还没有记录</div>`}
+  </div>`;
+}
+function renderTree() {
+  const editBtns = (id, isSection) => outlineEditing
+    ? `<button class="ob-btn" data-oact="rename" data-node="${esc(id)}">改名</button>` +
+      (isSection ? `<button class="ob-btn" data-oact="add-child" data-node="${esc(id)}">＋子目</button>` : "") +
+      `<button class="ob-btn" data-oact="remove" data-node="${esc(id)}">删</button>`
+    : "";
+  $("tree").innerHTML = outline.map((s) => {
+    const total = countFor(s.id, true);
+    return `<div class="sect">
+      <div class="sect-head" data-node="${esc(s.id)}">
+        <span class="node-dot ${total ? "has" : ""}"></span>
+        <span style="flex:1">${esc(s.title)}</span>
+        ${editBtns(s.id, true)}
+        <span class="cnt">${total ? total + " 条" : ""}</span>
+      </div>
+      ${expandedNodeId === s.id ? nodePanelHtml(s.id) : ""}
+      ${(s.children || []).map((c) => {
+        const n = countFor(c.id, false);
+        const latest = entries.find((e) => e.nodeId === c.id);
+        return `<div class="node-row ${progressNodeId === c.id ? "is-progress" : ""}" data-node="${esc(c.id)}">
+          <span class="node-dot ${n ? "has" : ""}"></span>
+          <span class="nr-title">${progressNodeId === c.id ? "📍 " : ""}${esc(c.title)}</span>
+          ${editBtns(c.id, false)}
+          <span class="nr-cnt">${n ? n + " 条" : ""}${latest && n ? " · " + fmtDateKey(latest.ts).slice(5).replace("-", "/") : ""}</span>
+        </div>
+        ${expandedNodeId === c.id ? nodePanelHtml(c.id) : ""}`;
+      }).join("")}
+    </div>`;
+  }).join("") + orphanHtml();
+}
+function orphanHtml() {
+  const orphans = entries.filter((e) => e.nodeId && !nodeById(e.nodeId));
+  const none = entries.filter((e) => !e.nodeId);
+  const pool = orphans.concat(none);
+  if (!pool.length) return "";
+  return `<div class="sect">
+    <div class="sect-head" data-node="__orphan__">
+      <span class="node-dot has"></span>
+      <span style="flex:1">未归档</span>
+      <span class="cnt">${pool.length} 条</span>
+    </div>
+    ${expandedNodeId === "__orphan__" ? `<div class="node-panel">${pool.map(entryHtml).join("")}</div>` : ""}
+  </div>`;
+}
+$("tree").addEventListener("click", (e) => {
+  const ob = e.target.closest(".ob-btn");
+  if (ob) { handleOutlineOp(ob.dataset.oact, ob.dataset.node); return; }
+  const act = e.target.closest("[data-act]");
+  if (act) {
+    const id = act.dataset.node;
+    if (act.dataset.act === "write-here") {
+      renderNodeSelect(false);
+      $("nodeSelect").value = id;
+      $("draft").focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (act.dataset.act === "set-progress") {
+      progressNodeId = progressNodeId === id ? null : id;
+      if (progressNodeId) localStorage.setItem(LS_PROGRESS, progressNodeId);
+      else localStorage.removeItem(LS_PROGRESS);
+      renderProgressLine();
+      renderTree();
+      toast(progressNodeId ? "已标记当前进度 📍" : "已取消标记");
+    }
+    return;
+  }
+  if (e.target.closest(".op-btn") || e.target.closest(".entry-tag") || e.target.closest(".entry-node")) return;
+  const row = e.target.closest("[data-node]");
+  if (!row) return;
+  const id = row.dataset.node;
+  expandedNodeId = expandedNodeId === id ? null : id;
+  renderTree();
+});
+function handleOutlineOp(op, id) {
+  if (op === "rename") {
+    const n = nodeById(id);
+    const name = prompt("新名称:", n ? n.title : "");
+    if (!name || !name.trim()) return;
+    outline.forEach((s) => {
+      if (s.id === id) s.title = name.trim();
+      (s.children || []).forEach((c) => { if (c.id === id) c.title = name.trim(); });
+    });
+    persistOutline(); renderAll();
+  } else if (op === "add-child") {
+    const name = prompt("子目名称(如:念死无常):");
+    if (!name || !name.trim()) return;
+    const s = outline.find((x) => x.id === id);
+    if (!s) return;
+    if (!s.children) s.children = [];
+    s.children.push({ id: uid(), title: name.trim() });
+    persistOutline(); renderAll();
+  } else if (op === "remove") {
+    const n = countFor(id, true);
+    if (!confirm(`删除「${nodeLabel(id)}」?${n ? `其下 ${n} 条记录会变为未归档。` : ""}`)) return;
+    outline = outline.filter((s) => s.id !== id);
+    outline.forEach((s) => { if (s.children) s.children = s.children.filter((c) => c.id !== id); });
+    persistOutline(); renderAll();
+  }
+}
+$("editOutlineBtn").addEventListener("click", () => {
+  outlineEditing = !outlineEditing;
+  $("editOutlineBtn").textContent = outlineEditing ? "完成编辑" : "编辑科判";
+  $("addSectionBtn").style.display = outlineEditing ? "" : "none";
+  renderTree();
+});
+$("addSectionBtn").addEventListener("click", () => {
+  const name = prompt("大科名称(如:下士道):");
+  if (!name || !name.trim()) return;
+  outline.push({ id: uid(), title: name.trim(), children: [] });
+  persistOutline(); renderAll();
+});
+
+/* ============ 条目操作(时间线 + 树内共用) ============ */
+document.addEventListener("click", (e) => {
+  const tagEl = e.target.closest(".entry-tag");
+  if (tagEl) {
+    filter.tag = filter.tag === tagEl.dataset.tag ? null : tagEl.dataset.tag;
+    switchView("timeline");
+    renderFilterBar(); renderTimeline();
+    return;
+  }
+  const nodeEl = e.target.closest(".entry-node");
+  if (nodeEl) {
+    filter.node = filter.node === nodeEl.dataset.node ? null : nodeEl.dataset.node;
+    switchView("timeline");
+    renderFilterBar(); renderTimeline();
+    return;
+  }
+  const opBtn = e.target.closest(".op-btn");
+  if (!opBtn) return;
+  const entryEl = e.target.closest(".entry");
+  if (!entryEl) return;
+  const id = entryEl.dataset.id;
+  const idx = entries.findIndex((x) => x.id === id);
+  if (idx < 0) return;
+  const op = opBtn.dataset.op;
+  if (op === "del") {
+    if (confirm("确定删除这条记录吗?")) {
+      entries.splice(idx, 1);
+      persistEntries();
+      renderAll();
+      toast("已删除");
+    }
+  } else if (op === "edit") {
+    editingId = id;
+    renderTimeline(); renderTree();
+    const ta = document.querySelector(`.entry[data-id="${id}"] .edit-area`);
+    if (ta) { ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length; }
+  } else if (op === "save-edit") {
+    const ta = entryEl.querySelector(".edit-area");
+    const val = ta.value.trim();
+    if (val) { entries[idx].text = val; persistEntries(); }
+    editingId = null;
+    renderAll();
+  } else if (op === "cancel-edit") {
+    editingId = null;
+    renderTimeline(); renderTree();
+  }
+});
+
+/* ============ 视图切换 ============ */
+function switchView(v) {
+  view = v;
+  localStorage.setItem(LS_VIEW, v);
+  document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("on", t.dataset.view === v));
+  $("viewTimeline").style.display = v === "timeline" ? "" : "none";
+  $("viewPath").style.display = v === "path" ? "" : "none";
+}
+document.querySelectorAll(".tab").forEach((t) =>
+  t.addEventListener("click", () => switchView(t.dataset.view)));
+
+/* ============ 数据导入导出 ============ */
+$("dataBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  $("dataMenu").classList.toggle("show");
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("#dataMenu") && !e.target.closest("#dataBtn")) {
+    $("dataMenu").classList.remove("show");
+  }
+});
+function download(name, content, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+$("exportMd").addEventListener("click", () => {
+  const groups = new Map();
+  [...entries].sort((a, b) => a.ts - b.ts).forEach((e) => {
+    const k = fmtDateKey(e.ts);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(e);
+  });
+  let md = "# 拾悟 · 道次第修学日记\n";
+  groups.forEach((items, key) => {
+    md += `\n## ${key}\n`;
+    items.forEach((e) => {
+      const meta = [
+        e.type ? `【${e.type}】` : "",
+        e.nodeId ? nodeFullPath(e.nodeId) : "",
+        (e.tags || []).length ? e.tags.map((t) => "#" + t).join(" ") : "",
+      ].filter(Boolean).join(" · ");
+      md += `\n### ${fmtTime(e.ts)}${meta ? " — " + meta : ""}\n\n${e.text}\n`;
+    });
+  });
+  download(`拾悟-${fmtDateKey(Date.now())}.md`, md, "text/markdown");
+  toast("Markdown 已导出");
+});
+$("exportJson").addEventListener("click", () => {
+  const data = { app: "shiwu", version: 2, entries, outline, progress: progressNodeId };
+  download(`拾悟-备份-${fmtDateKey(Date.now())}.json`, JSON.stringify(data, null, 2), "application/json");
+  toast("备份已导出");
+});
+$("importJson").addEventListener("click", () => $("fileInput").click());
+$("fileInput").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      const arr = Array.isArray(data) ? data : (Array.isArray(data.entries) ? data.entries : null);
+      if (!arr) throw new Error("bad format");
+      const existing = new Set(entries.map((x) => x.id));
+      let added = 0;
+      arr.forEach((item) => {
+        if (item && item.id && item.text && item.ts && !existing.has(item.id)) {
+          entries.push({
+            id: item.id, text: String(item.text), ts: item.ts,
+            type: TYPES.includes(item.type) ? item.type : null,
+            nodeId: item.nodeId || null,
+            tags: item.tags || [], mood: item.mood || null,
+          });
+          added++;
+        }
+      });
+      entries.sort((a, b) => b.ts - a.ts);
+      if (!Array.isArray(data) && Array.isArray(data.outline) && data.outline.length) {
+        outline = data.outline;
+        persistOutline();
+      }
+      if (!Array.isArray(data) && data.progress) {
+        progressNodeId = data.progress;
+        localStorage.setItem(LS_PROGRESS, progressNodeId);
+      }
+      persistEntries();
+      renderAll();
+      toast(`导入了 ${added} 条`);
+    } catch (err) {
+      toast("导入失败:文件格式不对");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+/* ============ 主题 ============ */
+function applyTheme(t) {
+  if (t === "dark") document.documentElement.setAttribute("data-theme", "dark");
+  else document.documentElement.removeAttribute("data-theme");
+}
+let theme = localStorage.getItem(LS_THEME) ||
+  (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+applyTheme(theme);
+$("themeBtn").addEventListener("click", () => {
+  theme = theme === "dark" ? "light" : "dark";
+  localStorage.setItem(LS_THEME, theme);
+  applyTheme(theme);
+});
+
+/* ============ 启动 ============ */
+function renderAll() {
+  renderStats();
+  renderReview();
+  renderFilterBar();
+  renderTimeline();
+  renderNodeSelect(true);
+  renderProgressLine();
+  renderTree();
+}
+showPrompt();
+renderTypeSeg();
+renderNodeSelect(false);
+switchView(view);
+renderAll();
+</script>
+</body>
+</html>
